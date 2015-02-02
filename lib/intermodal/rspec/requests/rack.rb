@@ -75,6 +75,7 @@ module Intermodal
         end
 
         def rack_compliant_request(_method, _url, _headers, _body, format = :json)
+          puts "rack request: #{_method} #{_url}"
           _payload_mime_type = (format.is_a?(Symbol) ? Mime::Type.lookup_by_extension(format) : format)
           req_opts = { :method => _method }.merge(rack_compliant_headers(_headers))
           req_opts[:input] = _body

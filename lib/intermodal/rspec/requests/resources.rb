@@ -65,15 +65,17 @@ module Intermodal
         # For example, index tests require injecting 3 resources and expects
         # the index endpoint to return exactly 3 resources.
         let(:reset_datastore!) { } # Do nothing by default
+
+        let(:eval_hash) { ->(values) { Hash[values.to_a.map {|(k,v)| v.respond_to?(:call) ? [k, v.call()] : [k, v]}] } }
       end
 
       module ClassMethods
         def given_create_attributes(values = {})
-          let(:valid_create_attributes) { values }
+          let(:valid_create_attributes) { eval_hash.(values) }
         end
 
         def given_update_attributes(values = {})
-          let(:valid_update_attributes) { values }
+          let(:valid_update_attributes) { eval_hash.(values) }
         end
 
         def metadata_for_resources(resource_name, options = {})

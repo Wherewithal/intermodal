@@ -21,6 +21,11 @@ module Intermodal
       end
     end
 
+    initializer "intermodal.add_routing_paths", after: 'eager_load!' do |app|
+      routes.finalize!
+      app.routes_reloader.route_sets << routes # if routes
+    end
+
     def inherited(base)
       unless base.abstract_railtie?
         Rails::Railtie::Configuration.eager_load_namespaces << base
@@ -37,7 +42,8 @@ module Intermodal
                            end
       end
 
-      base.instance_eval do
+      base.class_eval do
+        puts "initializing"
         initializer "#{self.name}.load_presentation", :after => 'eager_load!' do
           self.load_presentations!
         end
@@ -45,6 +51,7 @@ module Intermodal
         initializer "#{self.name}.load_controllers", :after => 'eager_load!' do
           self.class.load_controllers!
         end
+
       end
 
       super
@@ -58,11 +65,12 @@ module Intermodal
       super
     end
 
+    delegate :middleware, to: :config
+
     # Returns the underlying rack application for this engine.
     def app
       @app ||= begin
-        config.middleware = config.middleware.merge_into(default_middleware_stack)
-        config.middleware.build(endpoint)
+        default_middleware_stack.build(routes)
       end
     end
 
@@ -84,9 +92,9 @@ module Intermodal
 
         middleware.use ::ActionDispatch::ParamsParser
         middleware.use ::Rack::MethodOverride
-        middleware.use ::ActionDispatch::Head
       end
     end
+
 
    # Define the Rack API for this engine.
     def call(env)
