@@ -187,8 +187,11 @@ module Intermodal
       app.config.allow_concurrency = false
     end
 
-    initializer 'intermodal.remove_rack_lock', after: 'build_middleware_stack' do |app|
-      app.config.middleware.delete "Rack::Lock"
+    initializer 'intermodal.strip_middleware', after: 'build_middleware_stack' do |app|
+      app.config.middleware.delete 'Rack::Lock'             # Run this in a multi-process server, not multithreaded
+      app.config.middleware.delete 'ActionDispatch::Flash'
+      # Use our own parsing code and responses, or drop this after Intermodal::Rack::Rescue
+      app.config.middleware.delete 'ActionDispatch::ParamsParser'
     end
 
     initializer 'intermodal.load_x_auth_token_warden', :before => 'build_middleware_stack' do |app|

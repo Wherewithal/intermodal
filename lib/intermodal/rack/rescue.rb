@@ -40,6 +40,10 @@ module Intermodal
         end
       end
 
+      rescue_from ActionDispatch::ParamsParser::ParseError do |exception|
+        [400, { 'Content-Type' => content_type(:json) }, { :parse_error => exception.message }.to_json]
+      end
+
       rescue_from MultiJson::DecodeError do |exception|
         [400, { 'Content-Type' => content_type(:json) }, { :parse_error => exception.message }.to_json]
       end
