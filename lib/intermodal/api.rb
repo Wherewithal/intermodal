@@ -182,6 +182,15 @@ module Intermodal
       app.routes_reloader.route_sets << routes if routes?
     end
 
+    # This code, especially running under Rspec, is simply not thread-safe.
+    initializer 'intermodal.disable_concurrency', before: 'build_middleware_stack' do |app|
+      app.config.allow_concurrency = false
+    end
+
+    initializer 'intermodal.remove_rack_lock', after: 'build_middleware_stack' do |app|
+      app.config.middleware.delete "Rack::Lock"
+    end
+
     initializer 'intermodal.load_x_auth_token_warden', :before => 'build_middleware_stack' do |app|
       Warden::Strategies.add(:x_auth_token) do
         def valid?
