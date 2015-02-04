@@ -18,26 +18,26 @@ module Intermodal
       return head :status => 404 unless resource
       if get?
         display resource,
-          :root => presentation_root,
-          :presenter => presenter,
-          :scope => presentation_scope,
-          :always_nest_collections => always_nest_collections
+          root: presentation_root,
+          presenter: presenter,
+          scope: presentation_scope,
+          always_nest_collections: always_nest_collections
 
       elsif has_errors?
         display resource.errors,
-          :root => presentation_root,
-          :status => :unprocessable_entity,
-          :presenter => presenter,
-          :scope => presentation_scope,
-          :always_nest_collections => always_nest_collections
+          root: presentation_root,
+          status: :unprocessable_entity,
+          presenter: presenter,
+          scope: presentation_scope,
+          always_nest_collections: always_nest_collections
 
       elsif post?
         display resource,
-          :root => presentation_root,
-          :status => :created,
-          :presenter => presenter,
-          :scope => presentation_scope,
-          :always_nest_collections => always_nest_collections
+          root: presentation_root,
+          status: :created,
+          presenter: presenter,
+          scope: presentation_scope,
+          always_nest_collections: always_nest_collections
           #:location => api_location # Taken out because it requires some additional URL definitions
       else
         head :ok
