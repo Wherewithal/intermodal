@@ -7,7 +7,7 @@ module Intermodal
         include Intermodal::Controllers::Accountability
         include Intermodal::Controllers::Anonymous
 
-        respond_to :json, :xml
+        respond_to :json
 
         class_attribute :model, :collection_name, :api
 

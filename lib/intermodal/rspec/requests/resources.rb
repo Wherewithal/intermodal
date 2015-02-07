@@ -83,7 +83,7 @@ module Intermodal
           end
           resource_name = resource_name.to_s if resource_name.is_a?(Symbol)
 
-          { :formats => [ :json, :xml ],
+          { :formats => [ :json ],
             :resource_name => resource_name,
             :model_name => resource_name.singularize,
             :encoding => 'utf-8',
@@ -116,6 +116,7 @@ module Intermodal
           options = metadata_for_resources(resource_name, options)
           _resource_name = options[:resource_name].singularize
 
+          # If you want xml, pass it as formats: [ :json, :xml ]
           options[:formats].each do |format|
             format_options = metadata_for_formatted_resource(format, options)
             context format_options[:collection_url], format_options do
