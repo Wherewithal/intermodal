@@ -113,15 +113,21 @@ module Intermodal
         end
 
         def expects_content_type(mime_type, charset = nil)
-          it "should respond with content type of #{mime_type}" do
-            content_type.should match(%r{^#{mime_type}})
-          end
-
-          if charset
-            it "should respond encoded in #{charset}" do
-              content_type.should match(%r{charset=#{charset}})
+          if mime_type
+            it "should respond with content type of #{mime_type}" do
+              content_type.should match(%r{^#{mime_type}})
+            end
+            if charset
+              it "should respond encoded in #{charset}" do
+                content_type.should match(%r{charset=#{charset}})
+              end
+            end
+          else
+            it "should not respond with content type" do
+              content_type.should be_nil
             end
           end
+
         end
 
         def expects_empty_body

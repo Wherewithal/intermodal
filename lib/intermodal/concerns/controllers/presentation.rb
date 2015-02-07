@@ -11,6 +11,7 @@ module Intermodal
         let(:acceptor) { api.acceptors[model_name] }
         let(:accepted_params) { acceptor.call(params[resource_name] || {}) }
       end
+
     end
   end
 end

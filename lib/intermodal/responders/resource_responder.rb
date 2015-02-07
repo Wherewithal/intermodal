@@ -30,7 +30,12 @@ module Intermodal
           presenter: presenter,
           scope: presentation_scope,
           always_nest_collections: always_nest_collections
-
+      elsif put?
+        display resource,
+          root: presentation_root,
+          presenter: presenter,
+          scope: presentation_scope,
+          always_nest_collections: always_nest_collections
       elsif post?
         display resource,
           root: presentation_root,
@@ -40,7 +45,7 @@ module Intermodal
           always_nest_collections: always_nest_collections
           #:location => api_location # Taken out because it requires some additional URL definitions
       else
-        head :ok
+        head status: 204
       end
     end
 

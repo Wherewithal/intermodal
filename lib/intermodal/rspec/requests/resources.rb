@@ -143,7 +143,7 @@ module Intermodal
           :show => 200,
           :create => 201,
           :update => 200,
-          :destroy => 200 }
+          :destroy => 204 }
 
         STANDARD_REQUEST_FOR = {
           :index => { :method => :get, :end_point => :collection_url },
@@ -229,7 +229,7 @@ module Intermodal
         end
 
         def expects_destroy(options = {}, &additional_examples)
-          request_resource_action(:destroy, options) do
+          request_resource_action(:destroy, {mime_type: nil, encoding: nil}.merge(options)) do
             it "should delete #{metadata[:resource_name]}" do
               response.should_not be(nil)
               lambda { resource_after_destroy }.should raise_error(record_not_found_error)
