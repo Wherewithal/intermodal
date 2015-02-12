@@ -29,7 +29,7 @@ module Intermodal
         let(:model_name) { model.name.underscore.to_sym }
 
         # Wrap JSON with root key?
-        let(:presentation_root) { resource_name }
+        let(:presentation_root) { nil }
         let(:presentation_scope) { nil } # Will default to :default scope
         let(:presentation_scope_for_index) { nil }
         let(:always_nest_collections) { false }

@@ -1,16 +1,21 @@
 require 'action_controller/responder'
 
+
 module Intermodal
   class ResourceResponder < ActionController::Responder
+    include Intermodal::Let
 
-    attr_accessor :presenter, :presentation_root, :presentation_scope, :always_nest_collections
+    attr_accessor :options
+
+    let(:presenter) { options[:presenter] || controller.send(:presenter) }
+
+    let(:presentation_root)       { options[:presentation_root]  || controller.send(:presentation_root)  }
+    let(:presentation_scope)      { options[:presentation_scope] || controller.send(:presentation_scope) }
+    let(:always_nest_collections) { options[:always_nest_collections] || controller.send(:always_nest_collections) }
 
     def initialize(controller, resources, options={})
       super(controller, resources, options)
-      @presenter = options[:presenter]
-      @presentation_root = options[:presentation_root]
-      @presentation_scope = options[:presentation_scope]
-      @always_nest_collections = options[:always_nest_collections]
+      @options = options
     end
 
     # This is the common behavior for "API" requests, like :xml and :json.
@@ -49,21 +54,5 @@ module Intermodal
       end
     end
 
-    # Refactor to use macro expansion
-    def presentation_scope
-      @presentation_scope ||= controller.send(:presentation_scope)
-    end
-
-    def presentation_root
-      @presentation_root ||= controller.send(:presentation_root)
-    end
-
-    def presenter
-      @presenter ||= controller.send(:presenter)
-    end
-
-    def always_nest_collections
-      @always_nest_collections || controller.send(:always_nest_collections)
-    end
   end
 end

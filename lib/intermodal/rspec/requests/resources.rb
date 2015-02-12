@@ -34,14 +34,14 @@ module Intermodal
         let(:resource_element_name) { model.name.demodulize.underscore }
         let(:collection_element_name) { resource_element_name.pluralize }
         let(:expected_resource) { model.find(model_resource.id) }
-        let(:persisted_resource_id) { body[resource_name]['id'] }
+        let(:persisted_resource_id) { body['id'] }
         let(:resource_after_create) { model.find(persisted_resource_id) }
         let(:resource_after_update) { model.find(resource_id) }
         let(:resource_after_destroy) { resource_after_update }
-        let(:resource) { parser.decode(expected_resource.send("to_#{format}", :root => resource_element_name, :presenter => presenter, :scope => presenter_scope)) }
+        let(:resource) { parser.decode(expected_resource.send("to_#{format}", :presenter => presenter, :scope => presenter_scope)) }
         let(:presenter_scope) { nil }
         let(:presenter_scope_for_index) { presenter_scope }
-        let(:resource_id) { resource[resource_name]['id'] }
+        let(:resource_id) { resource['id'] }
         let(:parent_ids) { parent_names.zip(model_parents.map { |m| m.id }) }
 
         let(:namespace) { nil }
@@ -50,7 +50,7 @@ module Intermodal
         let(:collection_url) { [ namespace_path, parent_path, "/#{resource_collection_name}.#{format}" ].join }
         let(:resource_url) { [ namespace_path, parent_path, "/#{resource_collection_name}/#{resource_id}.#{format}" ].join }
 
-        let(:request_json_payload) { { resource_element_name => request_payload }.to_json }
+        let(:request_json_payload) { request_payload.to_json }
         let(:request_xml_payload) { request_payload.to_xml(:root => resource_element_name) }
 
         let(:malformed_json_payload) { '{ "bad": [ "data": ] }' }
@@ -204,7 +204,7 @@ module Intermodal
         def expects_create(options = {}, &additional_examples)
           request_resource_action(:create, options) do
             it "should return the newly created #{metadata[:resource_name]}" do
-              body.should eql(parser.decode(resource_after_create.send("to_#{format}", { :presenter => presenter, :root => resource_element_name, :scope => presenter_scope})))
+              body.should eql(parser.decode(resource_after_create.send("to_#{format}", { :presenter => presenter, :scope => presenter_scope})))
             end
 
             with_malformed_data_should_respond_with_400
