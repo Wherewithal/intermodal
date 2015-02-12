@@ -9,9 +9,9 @@ module Intermodal
 
     let(:presenter) { options[:presenter] || controller.send(:presenter) }
 
-    let(:presentation_root)       { options[:presentation_root]  || controller.send(:presentation_root)  }
-    let(:presentation_scope)      { options[:presentation_scope] || controller.send(:presentation_scope) }
-    let(:always_nest_collections) { options[:always_nest_collections] || controller.send(:always_nest_collections) }
+    let(:presentation_root)       { options[:presentation_root]  || controller_send(:presentation_root)  }
+    let(:presentation_scope)      { options[:presentation_scope] || controller_send(:presentation_scope) }
+    let(:always_nest_collections) { options[:always_nest_collections] || controller_send(:always_nest_collections) || false }
 
     def initialize(controller, resources, options={})
       super(controller, resources, options)
@@ -52,6 +52,12 @@ module Intermodal
       else
         head status: 204
       end
+    end
+
+    protected
+
+    def controller_send(_method)
+      controller.respond_to?(_method) ? controller.send(_method) : nil
     end
 
   end
