@@ -49,6 +49,8 @@ module Intermodal
     autoload :HasParentResource, 'intermodal/concerns/models/has_parent_resource'
     autoload :ResourceLinking,   'intermodal/concerns/models/resource_linking'
     autoload :Presentation,      'intermodal/concerns/models/presentation'
+
+    autoload :SanitizeHTML,      'intermodal/concerns/models/sanitize_html'
   end
 
   module Controllers
