@@ -20,7 +20,11 @@ module Intermodal
 
     def resources(name, options = {}, &blk)
       controller_name = _controller_name(name)
-      _create_controller(name, controller_name, blk, :model => options[:model], :ancestor => Intermodal::ResourceController, :api => self)
+      _create_controller(name, controller_name, blk,
+                         api:       self,
+                         model:     options[:model],
+                         ancestor:  Intermodal::ResourceController,
+                         namespace: options[:namespace])
     end
 
     def nested_resources(parent_name, name, options = {}, &blk)
