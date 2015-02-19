@@ -10,7 +10,7 @@ module Intermodal
         # sanitize_html :description
         # sanitize_html :description, tags: %w(table tr td), attributes: %w(id class style)
         def self.sanitize_html(field, options={})
-          before_validation do
+          before_save do
             # Only sanitize if there is something to sanitize
             if self.send(field) and self.send("#{field}_changed?")
               self.send("#{field}=", Rails::Html::WhiteListSanitizer.new.sanitize(self.send(field), options))
@@ -21,7 +21,7 @@ module Intermodal
         # Completely strips out all HTML tags
         # strip_html :title
         def self.strip_html(field)
-          before_validation do
+          before_save do
             # Only strip if there is something to sanitize
             if self.send(field) and self.send("#{field}_changed?")
               self.send("#{field}=", Rails::Html::FullSanitizer.new.sanitize(self.send(field)))
