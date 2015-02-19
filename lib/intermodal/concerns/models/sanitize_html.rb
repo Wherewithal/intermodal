@@ -18,6 +18,17 @@ module Intermodal
           end
         end
 
+        # Completely strips out all HTML tags
+        # strip_html :title
+        def self.strip_html(field)
+          before_validation do
+            # Only strip if there is something to sanitize
+            if self.send(field) and self.send("#{field}_changed?")
+              self.send("#{field}=", Rails::Html::FullSanitizer.new.sanitize(self.send(field)))
+            end
+          end
+        end
+
       end
     end
   end
