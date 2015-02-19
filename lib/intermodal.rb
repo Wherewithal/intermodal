@@ -89,6 +89,7 @@ module Intermodal
     autoload :Accountability,    'intermodal/rspec/models/accountability'
     autoload :HasParentResource, 'intermodal/rspec/models/has_parent_resource'
     autoload :ResourceLinking,   'intermodal/rspec/models/resource_linking'
+    autoload :Sanitization,      'intermodal/rspec/models/sanitization'
 
     # Requests
     autoload :Rack,                  'intermodal/rspec/requests/rack'
