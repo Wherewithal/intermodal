@@ -38,7 +38,7 @@ module Intermodal
           context 'when concerned with accountability' do
             let(:model) { subject.class }
             it { should belong_to :account }
-            it { should validate_presence_of :account }
+            it { should validate_presence_of :account_id }
             it { model.should respond_to :by_account_id }
             it { model.should respond_to :by_account }
 

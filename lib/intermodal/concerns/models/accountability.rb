@@ -8,7 +8,7 @@ module Intermodal
         include Intermodal::Models::Presentation
 
         # Validations
-        validates_presence_of :account
+        validates_presence_of :account_id
 
         # Associations
         belongs_to :account
