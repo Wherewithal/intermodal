@@ -54,11 +54,12 @@ module Intermodal
   end
 
   module Controllers
-    autoload :Accountability,  'intermodal/concerns/controllers/accountability'
-    autoload :Anonymous,       'intermodal/concerns/controllers/anonymous'
-    autoload :Presentation,    'intermodal/concerns/controllers/presentation'
-    autoload :Resource,        'intermodal/concerns/controllers/resource'
-    autoload :ResourceLinking, 'intermodal/concerns/controllers/resource_linking'
+    autoload :Accountability,      'intermodal/concerns/controllers/accountability'
+    autoload :Anonymous,           'intermodal/concerns/controllers/anonymous'
+    autoload :Presentation,        'intermodal/concerns/controllers/presentation'
+    autoload :PaginatedCollection, 'intermodal/concerns/controllers/paginated_collection'
+    autoload :Resource,            'intermodal/concerns/controllers/resource'
+    autoload :ResourceLinking,     'intermodal/concerns/controllers/resource_linking'
   end
 
   module Acceptors
