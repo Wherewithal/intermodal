@@ -57,7 +57,7 @@ module Intermodal
     protected
 
     def controller_send(_method)
-      controller.respond_to?(_method) ? controller.send(_method) : nil
+      controller.respond_to?(_method, true) ? controller.send(_method) : nil
     end
 
   end
