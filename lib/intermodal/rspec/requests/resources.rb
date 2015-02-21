@@ -130,13 +130,15 @@ module Intermodal
           end
         end
 
-        def expects_resource_crud(options = {}, &blk)
+        def expects_resource_crud(options = {}, &additional_examples)
           expected_actions = options[:only] || [ :index, :show, :create, :update, :destroy ]
           expected_actions -= options[:except] if options[:except]
 
           expected_actions.each do |action|
             send("expects_#{action}")
           end
+
+          instance_eval(&additional_examples) if additional_examples
         end
 
         STANDARD_SUCCESSFUL_STATUS_FOR = {
