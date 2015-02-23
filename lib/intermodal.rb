@@ -62,6 +62,10 @@ module Intermodal
     autoload :ResourceLinking,     'intermodal/concerns/controllers/resource_linking'
   end
 
+  module Validators
+    autoload :AccountValidator,    'intermodal/validators/account_validator'
+  end
+
   module Acceptors
     autoload :Resource,      'intermodal/concerns/acceptors/resource'
     autoload :NamedResource, 'intermodal/concerns/acceptors/named_resource'
@@ -91,6 +95,7 @@ module Intermodal
     autoload :HasParentResource, 'intermodal/rspec/models/has_parent_resource'
     autoload :ResourceLinking,   'intermodal/rspec/models/resource_linking'
     autoload :Sanitization,      'intermodal/rspec/models/sanitization'
+    autoload :Validators,        'intermodal/rspec/validators'
 
     # Requests
     autoload :Rack,                  'intermodal/rspec/requests/rack'
