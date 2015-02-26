@@ -103,6 +103,7 @@ module Intermodal
     autoload :HTTP,                  'intermodal/rspec/requests/rfc2616_status_codes'
     autoload :AuthenticatedRequests, 'intermodal/rspec/requests/authenticated_requests'
     autoload :PaginatedCollection,   'intermodal/rspec/requests/paginated_collection'
+    autoload :RequestValidations,    'intermodal/rspec/requests/request_validations'
     autoload :Resources,             'intermodal/rspec/requests/resources'
     autoload :LinkedResources,       'intermodal/rspec/requests/linked_resources'
   end
