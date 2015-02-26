@@ -63,7 +63,8 @@ module Intermodal
   end
 
   module Validators
-    autoload :AccountValidator,    'intermodal/validators/account_validator'
+    autoload :AccountValidator,          'intermodal/validators/account_validator'
+    autoload :DifferentAccountValidator, 'intermodal/validators/different_account_validator'
   end
 
   module Acceptors
