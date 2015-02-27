@@ -81,6 +81,9 @@ module Intermodal
     autoload :LinkingResources, 'intermodal/proxies/linking_resources'
   end
 
+  # Exceptions
+  BadRequest = Class.new(Exception)
+
   # Extensions
   ActiveSupport.on_load(:after_initialize) do
     # Make sure this loads after Will Paginate loads

@@ -21,6 +21,10 @@ module Intermodal
         end
       end
 
+      rescue_from Intermodal::BadRequest do |exception|
+        [400, {}, [ 'Bad Request' ] ]
+      end
+
       rescue_from ActiveRecord::RecordNotFound do |exception|
         [404, {}, [ 'Not Found' ] ]
       end
