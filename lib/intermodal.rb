@@ -5,14 +5,18 @@ require 'will_paginate'
 module Intermodal
   # Core
   autoload :API,                'intermodal/api'
-  autoload :DeclareControllers, 'intermodal/declare_controllers'
   autoload :Configuration,      'intermodal/configuration'
+
+  module DSL
+    autoload :Controllers,         'intermodal/dsl/controllers'
+    autoload :Mapping,             'intermodal/dsl/mapping'
+    autoload :PresentationHelpers, 'intermodal/dsl/presentation_helpers'
+  end
 
   module Mapping
     autoload :Mapper,    'intermodal/mapping/mapper'
     autoload :Presenter, 'intermodal/mapping/presenter'
     autoload :Acceptor,  'intermodal/mapping/acceptor'
-    autoload :DSL,       'intermodal/mapping/dsl'
   end
 
   # Controller Templates

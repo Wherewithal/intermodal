@@ -9,8 +9,10 @@ module Intermodal
   class API < Rails::Railtie
     autoload :Configuration, "intermodal/api/configuration"
 
-    include Intermodal::Mapping::DSL
-    include Intermodal::DeclareControllers
+    include Intermodal::DSL::Mapping
+    include Intermodal::DSL::Controllers
+    include Intermodal::DSL::PresentationHelpers
+
     class_attribute :max_per_page, :default_per_page
 
     class << self

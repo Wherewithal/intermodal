@@ -1,6 +1,7 @@
 module Intermodal
   module Mapping
     class Mapper
+      extend Intermodal::DSL::PresentationHelpers
       class_attribute :_exclude_properties, :_property_mappings, :_mapping_strategy, :api
 
       INCLUDE_NILS = lambda { |h, resource, mapped_from, mapped_to| h[mapped_from] = map_attribute(resource, mapped_to) }

@@ -1,6 +1,6 @@
 module Intermodal
-  module Mapping
-    module DSL
+  module DSL
+    module Mapping
       extend ActiveSupport::Concern
 
       included do
@@ -29,11 +29,11 @@ module Intermodal
       end
 
       def presentation_for(resource, options = {},  &customizations)
-        presenters[resource.to_sym] = mapping_for(resource, Presenter, &customizations)
+        presenters[resource.to_sym] = mapping_for(resource, Intermodal::Mapping::Presenter, &customizations)
       end
 
       def acceptance_for(resource, options = {}, &customizations)
-        acceptors[resource.to_sym] = mapping_for(resource, Acceptor, &customizations)
+        acceptors[resource.to_sym] = mapping_for(resource, Intermodal::Mapping::Acceptor, &customizations)
       end
 
       # Setup
@@ -73,6 +73,7 @@ module Intermodal
       def accepts_resource(resource, options = {})
         accepts[resource_name(resource)].call(resource, options)
       end
+
     end
   end
 end
