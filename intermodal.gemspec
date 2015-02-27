@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name = "intermodal"
   s.version = Intermodal::VERSION
   s.authors = ["Ho-Sheng Hsiao"]
-  s.email = %w{hosh@sparkfly.com}
+  s.email = %w{talktohosh@gmail.com}
 
   s.date = %q{2011-08-26}
 
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'responders', '~> 2.1.0'
   s.add_runtime_dependency 'will_paginate', '>= 3.0.0'
   s.add_runtime_dependency 'warden'
+  s.add_runtime_dependency 'rlet', '~> 0.6.1'
 
   s.add_development_dependency 'awesome_print'
   s.add_development_dependency 'pry'

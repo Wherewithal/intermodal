@@ -1,6 +1,7 @@
 require 'intermodal/version'
 require 'active_support'
 require 'will_paginate'
+require 'rlet/functional'
 
 module Intermodal
   # Core
@@ -95,6 +96,8 @@ module Intermodal
 
     ::WillPaginate::Collection.send(:include, Intermodal::Proxies::WillPaginate::Collection)
   end
+
+  Functional = RLet::Functional
 
   # Rspec Macros
   module RSpec

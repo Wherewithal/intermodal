@@ -1,6 +1,8 @@
 module Intermodal
   module DSL
     module PresentationHelpers
+      using Intermodal::Functional
+
       ### Helpers
       #   These are helpers to make things easier to map. They will typically return a function, so using
       #   an applicative operator such as the one found in rlet/functional.rb will work well
@@ -13,13 +15,19 @@ module Intermodal
       #   end
       #
       def presenter(name, opt={})
-        ->(r) { r.send(name) ? presenters[name].call(r.send(name), opt) : nil }
+        attribute(name) | maybe(to_presentation(name, opt))
+      end
+
+      # Use this to map a value to a presenter
+      # Unlike #presenter() helper, this will not check if the attribute is ni
+      def to_presentation(name, opt={})
+        ->(value) { presenters[name].call(value, opt) }
       end
 
       # Use this to handle nil cases
       #
       # Example:
-      #   using RLet::Functional
+      #   using Intermodal::Functional
       #
       #   acceptance_for :article do
       #     accepts :published_at, with: params(:published_at) | maybe(parse_datetime)
@@ -31,7 +39,7 @@ module Intermodal
       # Use this to call a getter method on the model
       #
       # Example:
-      #   using RLet::Functional
+      #   using Intermodal::Functional
       #
       #   presentation_for :item do
       #     presents :price, with: attribute(:price) | helper(:number_to_currency)
@@ -43,7 +51,7 @@ module Intermodal
       # Use this to get a value from the params hash, most useful for acceptors
       #
       # Example:
-      #   using RLet::Functional
+      #   using Intermodal::Functional
       #
       #   acceptance_for :article do
       #     accepts :published_at, with: params(:published_at) | maybe(parse_datetime)
@@ -55,7 +63,7 @@ module Intermodal
       # Use this to access Rails ActionView helpers, most useful in presenters
       # in conjunction with attribute
       # Example:
-      #   using RLet::Functional
+      #   using Intermodal::Functional
       #
       #   presentation_for :item do
       #     presents :price, with: attribute(:price) | helper(:number_to_currency)
@@ -69,7 +77,7 @@ module Intermodal
       # a value into a human-friendly form, or for translations.
       #
       # Example:
-      #   using RLet::Functional
+      #   using Intermodal::Functional
       #
       #   presentation_for :ledger do
       #     presents :t_code
