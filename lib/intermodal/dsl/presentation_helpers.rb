@@ -88,12 +88,15 @@ module Intermodal
 
       # Use this to convert a string to a datetime. ActiveRecord .create() and
       # .update_attributes() is not very robust when we try to put in different datatypes.
+      #
+      # Assume that the date format that matters is in ISO 8601 format.
+      #
       # This will parse something to a datetime, and if it fails, we throw a BadRequest
       # exception. Intermodal will rescue from that and respond with HTTP 400 Bad Request error.
       def to_datetime
         @_to_datetime = proc do |dt|
           begin
-            DateTime.parse(dt.to_s)
+            DateTime.iso8601(dt.to_s)
           rescue ArgumentError
             raise Intermodal::BadRequest
           end
