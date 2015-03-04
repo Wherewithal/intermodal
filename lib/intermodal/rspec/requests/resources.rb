@@ -174,10 +174,12 @@ module Intermodal
 
         def expects_index(options = {}, &additional_examples)
           request_resource_action(:index, options) do
-            it "should return a list of all #{metadata[:resource_name]}" do
-              reset_datastore!
-              collection.should_not be_empty
-              body.should eql(presented_collection)
+            unless options[:skip_presentation_test]
+              it "should return a list of all #{metadata[:resource_name]}" do
+                reset_datastore!
+                collection.should_not be_empty
+                body.should eql(presented_collection)
+              end
             end
 
             expects_unauthorized_access_to_respond_with_401
