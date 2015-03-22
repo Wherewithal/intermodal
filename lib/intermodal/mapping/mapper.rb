@@ -31,8 +31,7 @@ module Intermodal
         #  maps :name, :scope => :named
         #
         def maps(property, opts = {})
-          scopes = opts[:scope] || [ :default ]
-          scopes = (scopes.is_a?(Array) ? scopes : [ scopes ]) 
+          scopes = Array(opts[:scope] || :default)
           scopes.each do |scope|
             # DEPRECATION: option :as
             remapped_property = opts[:with] || opts[:as] || property
@@ -41,9 +40,15 @@ module Intermodal
         end
 
         def map_attributes(resource, scope = :default)
-          (self._property_mappings[:default] + self._property_mappings[scope]).inject({}) { |m, p|
+          raise "Scope: #{scope} not found when mapping #{resource.inspect}" unless self._property_mappings[scope]
+          mappings = if scope == :default
+                       self._property_mappings[:default]
+                     else
+                       self._property_mappings[:default] + self._property_mappings[scope]
+                     end
+          mappings.inject({}) do |m, p|
             m.tap { |h| self._mapping_strategy[h, resource, p[0], p[1]] }
-          }.except(*self._exclude_properties)
+          end.except(*self._exclude_properties)
         end
 
         def map_attribute(resource, mapped_to)
