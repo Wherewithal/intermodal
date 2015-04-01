@@ -5,16 +5,36 @@ module Intermodal
     class Rescue
       include ActionController::Rescue
 
+      def self.watch(x)
+        ap x if defined? ap
+      end
+
+      def watch(x)
+        self.class.watch(x)
+      end
+
       rescue_from Exception do |exception|
         if defined? Rails and Rails.env == 'production'
           [500, {}, [ "Unexpected error. Please contact support." ] ]
         else
-          [500, {}, [ "Exception: #{exception.message}", "\n\n", exception.backtrace ].tap { |a| ap a if defined? ap } ]
+          [500, {}, [ "Exception: #{exception.message}", "\n\n", exception.backtrace ].tap(&method(:watch)) ]
         end
+      end
+
+      rescue_from Intermodal::BadRequest do |exception|
+        [400, {}, [ 'Bad Request' ] ]
       end
 
       rescue_from ActiveRecord::RecordNotFound do |exception|
         [404, {}, [ 'Not Found' ] ]
+      end
+
+      rescue_from ActionController::RoutingError do |exception|
+        if defined? Rails and Rails.env == 'production'
+          [404, {}, ['Not Found'] ]
+        else
+          [500, {}, [ "Exception: #{exception.message}", "\n", caller.join("\n"), "\n", exception.backtrace ].tap(&method(:watch)) ]
+        end
       end
 
       # TODO: Hack. Untested.
@@ -22,6 +42,10 @@ module Intermodal
         rescue_from ActiveResource::ResourceNotFound do |exception|
           [404, {}, [ 'Not Found' ] ]
         end
+      end
+
+      rescue_from ActionDispatch::ParamsParser::ParseError do |exception|
+        [400, { 'Content-Type' => content_type(:json) }, { :parse_error => exception.message }.to_json]
       end
 
       rescue_from MultiJson::DecodeError do |exception|

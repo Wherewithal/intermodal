@@ -34,14 +34,14 @@ module Intermodal
         let(:resource_element_name) { model.name.demodulize.underscore }
         let(:collection_element_name) { resource_element_name.pluralize }
         let(:expected_resource) { model.find(model_resource.id) }
-        let(:persisted_resource_id) { body[resource_name]['id'] }
+        let(:persisted_resource_id) { body['id'] }
         let(:resource_after_create) { model.find(persisted_resource_id) }
         let(:resource_after_update) { model.find(resource_id) }
         let(:resource_after_destroy) { resource_after_update }
-        let(:resource) { parser.decode(expected_resource.send("to_#{format}", :root => resource_element_name, :presenter => presenter, :scope => presenter_scope)) }
+        let(:resource) { parser.decode(expected_resource.send("to_#{format}", :presenter => presenter, :scope => presenter_scope)) }
         let(:presenter_scope) { nil }
         let(:presenter_scope_for_index) { presenter_scope }
-        let(:resource_id) { resource[resource_name]['id'] }
+        let(:resource_id) { resource['id'] }
         let(:parent_ids) { parent_names.zip(model_parents.map { |m| m.id }) }
 
         let(:namespace) { nil }
@@ -50,7 +50,7 @@ module Intermodal
         let(:collection_url) { [ namespace_path, parent_path, "/#{resource_collection_name}.#{format}" ].join }
         let(:resource_url) { [ namespace_path, parent_path, "/#{resource_collection_name}/#{resource_id}.#{format}" ].join }
 
-        let(:request_json_payload) { { resource_element_name => request_payload }.to_json }
+        let(:request_json_payload) { request_payload.to_json }
         let(:request_xml_payload) { request_payload.to_xml(:root => resource_element_name) }
 
         let(:malformed_json_payload) { '{ "bad": [ "data": ] }' }
@@ -83,7 +83,7 @@ module Intermodal
           end
           resource_name = resource_name.to_s if resource_name.is_a?(Symbol)
 
-          { :formats => [ :json, :xml ],
+          { :formats => [ :json ],
             :resource_name => resource_name,
             :model_name => resource_name.singularize,
             :encoding => 'utf-8',
@@ -116,6 +116,7 @@ module Intermodal
           options = metadata_for_resources(resource_name, options)
           _resource_name = options[:resource_name].singularize
 
+          # If you want xml, pass it as formats: [ :json, :xml ]
           options[:formats].each do |format|
             format_options = metadata_for_formatted_resource(format, options)
             context format_options[:collection_url], format_options do
@@ -129,13 +130,15 @@ module Intermodal
           end
         end
 
-        def expects_resource_crud(options = {}, &blk)
+        def expects_resource_crud(options = {}, &additional_examples)
           expected_actions = options[:only] || [ :index, :show, :create, :update, :destroy ]
           expected_actions -= options[:except] if options[:except]
 
           expected_actions.each do |action|
             send("expects_#{action}")
           end
+
+          instance_eval(&additional_examples) if additional_examples
         end
 
         STANDARD_SUCCESSFUL_STATUS_FOR = {
@@ -143,7 +146,7 @@ module Intermodal
           :show => 200,
           :create => 201,
           :update => 200,
-          :destroy => 200 }
+          :destroy => 204 }
 
         STANDARD_REQUEST_FOR = {
           :index => { :method => :get, :end_point => :collection_url },
@@ -171,10 +174,12 @@ module Intermodal
 
         def expects_index(options = {}, &additional_examples)
           request_resource_action(:index, options) do
-            it "should return a list of all #{metadata[:resource_name]}" do
-              reset_datastore!
-              collection.should_not be_empty
-              body.should eql(presented_collection)
+            unless options[:skip_presentation_test]
+              it "should return a list of all #{metadata[:resource_name]}" do
+                reset_datastore!
+                collection.should_not be_empty
+                body.should eql(presented_collection)
+              end
             end
 
             expects_unauthorized_access_to_respond_with_401
@@ -203,7 +208,7 @@ module Intermodal
         def expects_create(options = {}, &additional_examples)
           request_resource_action(:create, options) do
             it "should return the newly created #{metadata[:resource_name]}" do
-              body.should eql(parser.decode(resource_after_create.send("to_#{format}", { :presenter => presenter, :root => resource_element_name, :scope => presenter_scope})))
+              body.should eql(parser.decode(resource_after_create.send("to_#{format}", { :presenter => presenter, :scope => presenter_scope})))
             end
 
             with_malformed_data_should_respond_with_400
@@ -229,7 +234,7 @@ module Intermodal
         end
 
         def expects_destroy(options = {}, &additional_examples)
-          request_resource_action(:destroy, options) do
+          request_resource_action(:destroy, {mime_type: nil, encoding: nil}.merge(options)) do
             it "should delete #{metadata[:resource_name]}" do
               response.should_not be(nil)
               lambda { resource_after_destroy }.should raise_error(record_not_found_error)

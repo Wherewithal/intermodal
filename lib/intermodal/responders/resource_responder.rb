@@ -1,14 +1,21 @@
+require 'action_controller/responder'
+
+
 module Intermodal
   class ResourceResponder < ActionController::Responder
+    include Intermodal::Let
 
-    attr_accessor :presenter, :presentation_root, :presentation_scope, :always_nest_collections
+    attr_accessor :options
+
+    let(:presenter) { options[:presenter] || controller.send(:presenter) }
+
+    let(:presentation_root)       { options[:presentation_root]  || controller_send(:presentation_root)  }
+    let(:presentation_scope)      { options[:presentation_scope] || controller_send(:presentation_scope) }
+    let(:always_nest_collections) { options[:always_nest_collections] || controller_send(:always_nest_collections) || false }
 
     def initialize(controller, resources, options={})
       super(controller, resources, options)
-      @presenter = options[:presenter]
-      @presentation_root = options[:presentation_root]
-      @presentation_scope = options[:presentation_scope]
-      @always_nest_collections = options[:always_nest_collections]
+      @options = options
     end
 
     # This is the common behavior for "API" requests, like :xml and :json.
@@ -16,47 +23,42 @@ module Intermodal
       return head :status => 404 unless resource
       if get?
         display resource,
-          :root => presentation_root,
-          :presenter => presenter,
-          :scope => presentation_scope,
-          :always_nest_collections => always_nest_collections
+          root: presentation_root,
+          presenter: presenter,
+          scope: presentation_scope,
+          always_nest_collections: always_nest_collections
 
       elsif has_errors?
         display resource.errors,
-          :root => presentation_root,
-          :status => :unprocessable_entity,
-          :presenter => presenter,
-          :scope => presentation_scope,
-          :always_nest_collections => always_nest_collections
-
+          root: presentation_root,
+          status: :unprocessable_entity,
+          presenter: presenter,
+          scope: presentation_scope,
+          always_nest_collections: always_nest_collections
+      elsif put?
+        display resource,
+          root: presentation_root,
+          presenter: presenter,
+          scope: presentation_scope,
+          always_nest_collections: always_nest_collections
       elsif post?
         display resource,
-          :root => presentation_root,
-          :status => :created,
-          :presenter => presenter,
-          :scope => presentation_scope,
-          :always_nest_collections => always_nest_collections
+          root: presentation_root,
+          status: :created,
+          presenter: presenter,
+          scope: presentation_scope,
+          always_nest_collections: always_nest_collections
           #:location => api_location # Taken out because it requires some additional URL definitions
       else
-        head :ok
+        head status: 204
       end
     end
 
-    # Refactor to use macro expansion
-    def presentation_scope
-      @presentation_scope ||= controller.send(:presentation_scope)
+    protected
+
+    def controller_send(_method)
+      controller.respond_to?(_method, true) ? controller.send(_method) : nil
     end
 
-    def presentation_root
-      @presentation_root ||= controller.send(:presentation_root)
-    end
-
-    def presenter
-      @presenter ||= controller.send(:presenter)
-    end
-
-    def always_nest_collections
-      @always_nest_collections || controller.send(:always_nest_collections)
-    end
   end
 end

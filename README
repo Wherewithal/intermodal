@@ -1,4 +1,4 @@
-Intermodal 0.0.1
+Intermodal 0.4.0
 
 === Summary ===
 
@@ -15,13 +15,15 @@ Intermodal lets you quickly put together a pure, JSON/XML-only RESTful web servi
 
 === Requirements ==
 
-Rails 3.0.x
+Rails 4.2.x
+
+Anything below that is no longer supported.
 
 === TODO ===
 
  - Fix known bug with class reloading in development mode
  - Not everything is packaged well
  - Should include standardized paging
- - Integration as Rails 3.1 Engine for versioning endpoints
  - Cross-account authorization
- - Override stock Rails 3.0 error handling to produce JSON/XML instead of HTML traces
+ - Reorganize controller concerns
+ - Quick-Start and HOWTO guides

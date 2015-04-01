@@ -1,10 +1,11 @@
 module Intermodal
   module Mapping
     class Mapper
+      extend Intermodal::DSL::PresentationHelpers
       class_attribute :_exclude_properties, :_property_mappings, :_mapping_strategy, :api
 
       INCLUDE_NILS = lambda { |h, resource, mapped_from, mapped_to| h[mapped_from] = map_attribute(resource, mapped_to) }
-      EXCLUDE_NILS = lambda { |h, resource, mapped_from, mapped_to| a = map_attribute(resource, mapped_to); h[mapped_from] = a if a }
+      EXCLUDE_NILS = lambda { |h, resource, mapped_from, mapped_to| a = map_attribute(resource, mapped_to); h[mapped_from] = a unless a.nil? }
 
       class << self
         # :public: Blacklists properties
@@ -30,8 +31,7 @@ module Intermodal
         #  maps :name, :scope => :named
         #
         def maps(property, opts = {})
-          scopes = opts[:scope] || [ :default ]
-          scopes = (scopes.is_a?(Array) ? scopes : [ scopes ]) 
+          scopes = Array(opts[:scope] || :default)
           scopes.each do |scope|
             # DEPRECATION: option :as
             remapped_property = opts[:with] || opts[:as] || property
@@ -40,9 +40,15 @@ module Intermodal
         end
 
         def map_attributes(resource, scope = :default)
-          (self._property_mappings[:default] + self._property_mappings[scope]).inject({}) { |m, p|
+          raise "Scope: #{scope} not found when mapping #{resource.inspect}" unless self._property_mappings[scope]
+          mappings = if scope == :default
+                       self._property_mappings[:default]
+                     else
+                       self._property_mappings[:default] + self._property_mappings[scope]
+                     end
+          mappings.inject({}) do |m, p|
             m.tap { |h| self._mapping_strategy[h, resource, p[0], p[1]] }
-          }.except(*self._exclude_properties)
+          end.except(*self._exclude_properties)
         end
 
         def map_attribute(resource, mapped_to)

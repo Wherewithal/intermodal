@@ -1,10 +1,15 @@
+require 'active_model/secure_password'
+
 module Intermodal
   module Models
-    module AccessCredential 
+    module AccessCredential
       extend ActiveSupport::Concern
 
       included do
         include Intermodal::Models::Accountability
+        include ActiveModel::SecurePassword
+
+        has_secure_password
 
         # Validations
         validates_uniqueness_of :identity
@@ -13,7 +18,9 @@ module Intermodal
         belongs_to :account
 
         def self.authenticate!(identity, key)
-          ::Account.joins(:access_credentials).where(:access_credentials => { :identity => identity, :key => key }).limit(1).first
+          access = self.find_by(identity: identity).try(:authenticate, key)
+          return false unless access
+          access.account
         end
       end
     end

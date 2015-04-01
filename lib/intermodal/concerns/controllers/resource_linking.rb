@@ -9,7 +9,7 @@ module Intermodal
         include Intermodal::Controllers::Accountability
         include Intermodal::Controllers::Anonymous
 
-        respond_to :json, :xml
+        respond_to :json
         self.responder = ResourceResponder
 
         let(:parent_id) { params[:id] }
