@@ -82,6 +82,12 @@ module Intermodal
     autoload :NamedResource, 'intermodal/concerns/presenters/named_resource'
   end
 
+  module Rails
+    autoload :Rails3Stack,   'intermodal/concerns/rails/rails_3_stack'
+    autoload :Rails4Stack,   'intermodal/concerns/rails/rails_4_stack'
+    autoload :UseWarden,     'intermodal/concerns/rails/use_warden'
+  end
+
   module Proxies
     autoload :LinkingResources, 'intermodal/proxies/linking_resources'
   end

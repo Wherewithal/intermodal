@@ -6,7 +6,7 @@ require 'active_support/core_ext/module/delegation'
 
 # Modified from Rail 4.2 rails/engine.rb
 module Intermodal
-  class API < Rails::Railtie
+  class API < ::Rails::Railtie
     autoload :Configuration, "intermodal/api/configuration"
 
     include Intermodal::DSL::Mapping
@@ -25,7 +25,7 @@ module Intermodal
 
       def inherited(base)
         unless base.abstract_railtie?
-          Rails::Railtie::Configuration.eager_load_namespaces << base
+          ::Rails::Railtie::Configuration.eager_load_namespaces << base
 
           base.called_from = begin
             call_stack = if Kernel.respond_to?(:caller_locations)
@@ -113,7 +113,7 @@ module Intermodal
     def load_generators(app=self)
       require "rails/generators"
       run_generators_blocks(app)
-      Rails::Generators.configure!(app.config.generators)
+      ::Rails::Generators.configure!(app.config.generators)
       self
     end
 
