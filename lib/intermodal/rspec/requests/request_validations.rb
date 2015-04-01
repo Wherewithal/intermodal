@@ -26,7 +26,7 @@ module Intermodal
             let(:eval_hash)       { ->(x) { [x[0].to_s, maybe_call.(x[1]) ] } }
             let(:maybe_call)      { ->(x) { x.respond_to?(:call) ? x.call : x } }
 
-            expects_status _status
+            expect_status _status
             instance_eval(&additional_examples) if additional_examples
           end
         end

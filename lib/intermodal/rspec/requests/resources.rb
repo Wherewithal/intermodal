@@ -130,12 +130,12 @@ module Intermodal
           end
         end
 
-        def expects_resource_crud(options = {}, &additional_examples)
+        def expect_resource_crud(options = {}, &additional_examples)
           expected_actions = options[:only] || [ :index, :show, :create, :update, :destroy ]
           expected_actions -= options[:except] if options[:except]
 
           expected_actions.each do |action|
-            send("expects_#{action}")
+            send("expect_#{action}")
           end
 
           instance_eval(&additional_examples) if additional_examples
@@ -166,13 +166,13 @@ module Intermodal
 
           request options[:method], options[options[:end_point]], options[:payload] do
             let(:request_url) { send(options[:end_point]) }
-            expects_status(options[:status])
-            expects_content_type(options[:mime_type], options[:encoding])
+            expect_status(options[:status])
+            expect_content_type(options[:mime_type], options[:encoding])
             instance_eval(&blk) if blk
           end
         end
 
-        def expects_index(options = {}, &additional_examples)
+        def expect_index(options = {}, &additional_examples)
           request_resource_action(:index, options) do
             unless options[:skip_presentation_test]
               it "should return a list of all #{metadata[:resource_name]}" do
@@ -182,9 +182,9 @@ module Intermodal
               end
             end
 
-            expects_unauthorized_access_to_respond_with_401
+            expect_unauthorized_access_to_respond_with_401
             unless options[:skip_pagination_examples]
-              expects_paginated_resource do
+              expect_paginated_resource do
                 before(:each) { reset_datastore! }
               end
             end
@@ -192,7 +192,7 @@ module Intermodal
           end
         end
 
-        def expects_show(options = {}, &additional_examples)
+        def expect_show(options = {}, &additional_examples)
           request_resource_action(:show, options) do
             it "should return a #{metadata[:resource_name]} of id 1" do
               resource.should_not be_nil
@@ -200,24 +200,24 @@ module Intermodal
             end
 
             with_non_existent_resource_should_respond_with_404
-            expects_unauthorized_access_to_respond_with_401
+            expect_unauthorized_access_to_respond_with_401
             instance_eval(&additional_examples) if additional_examples
           end
         end
 
-        def expects_create(options = {}, &additional_examples)
+        def expect_create(options = {}, &additional_examples)
           request_resource_action(:create, options) do
             it "should return the newly created #{metadata[:resource_name]}" do
               body.should eql(parser.decode(resource_after_create.send("to_#{format}", { :presenter => presenter, :scope => presenter_scope})))
             end
 
             with_malformed_data_should_respond_with_400
-            expects_unauthorized_access_to_respond_with_401
+            expect_unauthorized_access_to_respond_with_401
             instance_eval(&additional_examples) if additional_examples
           end
         end
 
-        def expects_update(options = {}, &additional_examples)
+        def expect_update(options = {}, &additional_examples)
           request_resource_action(:update, options) do
             it "should update #{metadata[:resource_name]}" do
               response.should_not be(nil)
@@ -228,12 +228,12 @@ module Intermodal
 
             with_malformed_data_should_respond_with_400
             with_non_existent_resource_should_respond_with_404
-            expects_unauthorized_access_to_respond_with_401
+            expect_unauthorized_access_to_respond_with_401
             instance_eval(&additional_examples) if additional_examples
           end
         end
 
-        def expects_destroy(options = {}, &additional_examples)
+        def expect_destroy(options = {}, &additional_examples)
           request_resource_action(:destroy, {mime_type: nil, encoding: nil}.merge(options)) do
             it "should delete #{metadata[:resource_name]}" do
               response.should_not be(nil)
@@ -241,7 +241,7 @@ module Intermodal
             end
 
             with_non_existent_resource_should_respond_with_404
-            expects_unauthorized_access_to_respond_with_401
+            expect_unauthorized_access_to_respond_with_401
             instance_eval(&additional_examples) if additional_examples
           end
         end
@@ -250,19 +250,19 @@ module Intermodal
           context "with malformed #{metadata[:format]} payload" do
             let(:request_raw_payload) { send("malformed_#{format}_payload") }
 
-            expects_status(400)
-            expects_content_type(metadata[:mime_type], metadata[:encoding])
+            expect_status(400)
+            expect_content_type(metadata[:mime_type], metadata[:encoding])
           end
         end
 
         def with_non_existent_resource_should_respond_with_404
           context 'with non-existent resource' do
             let(:resource_id) { 0 } # Assumes that persisted datastore never uses id of 0
-            expects_status 404
+            expect_status 404
           end
         end
 
-        def expects_json_presentation(_presenter_scope = nil)
+        def expect_json_presentation(_presenter_scope = nil)
           let(:presenter_scope) { _presenter_scope } if _presenter_scope
 
           it 'should present a JSON object' do

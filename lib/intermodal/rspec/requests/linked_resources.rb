@@ -38,20 +38,20 @@ module Intermodal
           end
         end
 
-        def expects_crud_for_linked_resource
-          expects_index :skip_pagination_examples => true do
+        def expect_crud_for_linked_resource
+          expect_index :skip_pagination_examples => true do
             it 'should include the parent id' do
               collection.should_not be_empty
               body[resource_element_name.to_s]['id'].should eql(model_parents.first.id)
             end
           end
 
-          expects_list_replace
-          expects_list_append
-          expects_list_remove
+          expect_list_replace
+          expect_list_append
+          expect_list_remove
         end
 
-        def expects_list_replace(&blk)
+        def expect_list_replace(&blk)
           _metadata = metadata
           request :post, metadata[:collection_url] do
             let(:request_url) { collection_url }
@@ -61,18 +61,18 @@ module Intermodal
 
             instance_eval(&blk) if blk
 
-            expects_status(201)
-            expects_content_type(metadata[:mime_type], metadata[:encoding])
+            expect_status(201)
+            expect_content_type(metadata[:mime_type], metadata[:encoding])
 
             with_malformed_data_should_respond_with_400
             with_nil_target_ids_should_respond_with_422
-            expects_unauthorized_access_to_respond_with_401
+            expect_unauthorized_access_to_respond_with_401
 
             context 'with empty payload' do
               let(:request_payload) { { collection_element_name => [] } }
 
-              expects_status(201)
-              expects_content_type(metadata[:mime_type], metadata[:encoding])
+              expect_status(201)
+              expect_content_type(metadata[:mime_type], metadata[:encoding])
 
               it 'should reset resource linking' do
                 response.should_not be_empty
@@ -98,7 +98,7 @@ module Intermodal
           end
         end
 
-        def expects_list_append(&blk)
+        def expect_list_append(&blk)
           _metadata = metadata
           request :put, metadata[:collection_url] do
             instance_eval(&blk) if blk
@@ -107,8 +107,8 @@ module Intermodal
             let(:request_payload) { { collection_element_name => additional_target_ids } }
             let(:updated_target_ids) { model.by_parent(model_parent).to_target_ids }
 
-            expects_status(200)
-            expects_content_type(metadata[:mime_type], metadata[:encoding])
+            expect_status(200)
+            expect_content_type(metadata[:mime_type], metadata[:encoding])
 
             it 'should link additional targets to manufacturer' do
               model_collection.should_not be_empty
@@ -128,11 +128,11 @@ module Intermodal
 
             with_malformed_data_should_respond_with_400
             with_nil_target_ids_should_respond_with_422
-            expects_unauthorized_access_to_respond_with_401
+            expect_unauthorized_access_to_respond_with_401
           end
         end
 
-        def expects_list_remove(&blk)
+        def expect_list_remove(&blk)
           _metadata = metadata
           request :delete, metadata[:collection_url] do
             instance_eval(&blk) if blk
@@ -142,8 +142,8 @@ module Intermodal
             let(:request_payload) { { collection_element_name => deleted_target_ids } }
             let(:updated_target_ids) { model.by_parent(model_parent).to_target_ids }
 
-            expects_status(200)
-            expects_content_type(metadata[:mime_type], metadata[:encoding])
+            expect_status(200)
+            expect_content_type(metadata[:mime_type], metadata[:encoding])
 
             it 'should delete linked targets' do
               deleted_target_ids.should_not be_empty
@@ -163,14 +163,14 @@ module Intermodal
 
             with_malformed_data_should_respond_with_400
             with_nil_target_ids_should_respond_with_422
-            expects_unauthorized_access_to_respond_with_401
+            expect_unauthorized_access_to_respond_with_401
           end
         end
 
         def with_nil_target_ids_should_respond_with_422
           context 'without nil ids ' do
             let(:request_payload) { { collection_element_name => nil } }
-            expects_status(422)
+            expect_status(422)
           end
         end
 

@@ -13,11 +13,11 @@ module Intermodal
           acceptor.call(input.with_indifferent_access)
         end
 
-        def expects_acceptance(input, expectation)
+        def expect_acceptance(input, expectation)
           acceptance_for(input).should eql(expectation)
         end
 
-        def expects_rejection(input, expectation)
+        def expect_rejection(input, expectation)
           acceptance_for(input).should_not eql(expectation)
         end
       end
@@ -37,7 +37,7 @@ module Intermodal
         def imposes(*fields)
           fields.each do |field|
             it "should accept #{field}" do
-              expects_acceptance({ field => random_field_data }, { field.to_sym => random_field_data })
+              expect_acceptance({ field => random_field_data }, { field.to_sym => random_field_data })
             end
           end
         end
@@ -45,7 +45,7 @@ module Intermodal
         def rejects(*fields)
           fields.each do |field|
             it "should reject #{field}" do
-              expects_rejection({ field => random_field_data }, { field.to_sym => random_field_data })
+              expect_rejection({ field => random_field_data }, { field.to_sym => random_field_data })
             end
           end
         end

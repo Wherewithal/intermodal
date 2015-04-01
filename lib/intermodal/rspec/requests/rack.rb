@@ -106,13 +106,13 @@ module Intermodal
           let(:request_payload, &_payload)
         end
 
-        def expects_status(response_status)
+        def expect_status(response_status)
           it "should respond with status #{response_status} #{Intermodal::RSpec::HTTP::STATUS_CODES[response_status.to_s]}" do
             status.should eql(response_status)
           end
         end
 
-        def expects_content_type(mime_type, charset = nil)
+        def expect_content_type(mime_type, charset = nil)
           if mime_type
             it "should respond with content type of #{mime_type}" do
               content_type.should match(%r{^#{mime_type}})
@@ -130,7 +130,7 @@ module Intermodal
 
         end
 
-        def expects_empty_body
+        def expect_empty_body
           it "should respond with a Rack-compliant empty body" do
             response[2].should be_empty
             response[2].should be_respond_to(:each)

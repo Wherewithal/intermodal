@@ -11,7 +11,7 @@ module Intermodal
         let(:presentation) { presenter.call(resource, :scope => scope).with_indifferent_access }
         let(:scope) { :default }
 
-        def expects_presentation(input, expectation)
+        def expect_presentation(input, expectation)
           field = input.keys[0]
           presenter.call(input.with_indifferent_access, :scope => scope)[field].should eql(expectation)
         end

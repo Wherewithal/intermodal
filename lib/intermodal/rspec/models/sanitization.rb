@@ -4,7 +4,7 @@ module Intermodal
       extend ActiveSupport::Concern
 
       module ClassMethods
-        def expects_sanitization_of(_field, _options, &additional_examples)
+        def expect_sanitization_of(_field, _options, &additional_examples)
           # We are not trying to retest the sanitizer so much as lightly demonstrating
           # idempotence. That is, repeated calls to the sanitizer should produce the
           # same output
@@ -47,7 +47,7 @@ module Intermodal
           end
         end
 
-        def expects_stripping_of(_field, &additional_examples)
+        def expect_stripping_of(_field, &additional_examples)
           # We are not trying to retest the sanitizer so much as lightly demonstrating
           # idempotence. That is, repeated calls to the sanitizer should produce the
           # same output
