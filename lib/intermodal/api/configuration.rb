@@ -1,6 +1,5 @@
 require 'rails/railtie/configuration'
 
-
 # Modified from Rails 4.2 rails/engine/configuration.rg
 module Intermodal
   class API
@@ -14,7 +13,7 @@ module Intermodal
 
       # Returns the middleware stack for the engine.
       def middleware
-        @middleware ||= Rails::Configuration::MiddlewareStackProxy.new
+        @middleware ||= ::Rails::Configuration::MiddlewareStackProxy.new
       end
 
       # Holds generators configuration:
@@ -30,7 +29,7 @@ module Intermodal
       #   config.generators.colorize_logging = false
       #
       def generators #:nodoc:
-        @generators ||= Rails::Configuration::Generators.new
+        @generators ||= ::Rails::Configuration::Generators.new
         yield(@generators) if block_given?
         @generators
       end

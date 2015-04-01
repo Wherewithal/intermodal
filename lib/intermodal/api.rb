@@ -1,5 +1,4 @@
 require 'rails/railtie'
-require 'intermodal/api/railties'
 require 'intermodal/rack/rescue'
 
 require 'active_support/core_ext/module/delegation'
@@ -196,15 +195,17 @@ module Intermodal
       app.config.middleware.delete 'ActionDispatch::ParamsParser'
     end
 
-    initializer 'intermodal.load_x_auth_token_warden', :before => 'build_middleware_stack' do |app|
-      Warden::Strategies.add(:x_auth_token) do
-        def valid?
-          env['HTTP_X_AUTH_TOKEN']
-        end
+    if defined? Warden
+      initializer 'intermodal.load_x_auth_token_warden', :before => 'build_middleware_stack' do |app|
+        Warden::Strategies.add(:x_auth_token) do
+          def valid?
+            env['HTTP_X_AUTH_TOKEN']
+          end
 
-        def authenticate!
-          a = AccessToken.authenticate!(env['HTTP_X_AUTH_TOKEN'])
-          a.nil? ? fail!("Could not log in") : success!(a)
+          def authenticate!
+            a = AccessToken.authenticate!(env['HTTP_X_AUTH_TOKEN'])
+            a.nil? ? fail!("Could not log in") : success!(a)
+          end
         end
       end
     end
@@ -228,11 +229,15 @@ module Intermodal
         # middleware.use config.session_store, config.session_options
         # Use random secret for now until we can get rid of this.
         middleware.use Intermodal::Rack::DummyStore
+
         #middleware.use ::ActionDispatch::Flash
-        middleware.use Warden::Manager do |manager|
-          manager.default_strategies :x_auth_token #, :basic
-          manager.failure_app = proc do
-            Intermodal::Rack::Auth::UNAUTHORIZED
+
+        if defined? Warden
+          middleware.use Warden::Manager do |manager|
+            manager.default_strategies :x_auth_token #, :basic
+            manager.failure_app = proc do
+              Intermodal::Rack::Auth::UNAUTHORIZED
+            end
           end
         end
 
