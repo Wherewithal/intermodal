@@ -183,18 +183,6 @@ module Intermodal
       app.routes_reloader.route_sets << routes if routes?
     end
 
-    # This code, especially running under Rspec, is simply not thread-safe.
-    initializer 'intermodal.disable_concurrency', before: 'build_middleware_stack' do |app|
-      app.config.allow_concurrency = false
-    end
-
-    initializer 'intermodal.strip_middleware', after: 'build_middleware_stack' do |app|
-      app.config.middleware.delete 'Rack::Lock'             # Run this in a multi-process server, not multithreaded
-      app.config.middleware.delete 'ActionDispatch::Flash'
-      # Use our own parsing code and responses, or drop this after Intermodal::Rack::Rescue
-      app.config.middleware.delete 'ActionDispatch::ParamsParser'
-    end
-
     if defined? Warden
       initializer 'intermodal.load_x_auth_token_warden', :before => 'build_middleware_stack' do |app|
         Warden::Strategies.add(:x_auth_token) do
@@ -225,14 +213,12 @@ module Intermodal
       ActionDispatch::MiddlewareStack.new.tap do |middleware|
         middleware.use ::Intermodal::Rack::Rescue
 
-        # TODO: Find a way to patch Warden so this is not necessary
-        # middleware.use config.session_store, config.session_options
-        # Use random secret for now until we can get rid of this.
-        middleware.use Intermodal::Rack::DummyStore
-
-        #middleware.use ::ActionDispatch::Flash
-
         if defined? Warden
+          # TODO: Find a way to patch Warden so this is not necessary
+          # middleware.use config.session_store, config.session_options
+          # Use random secret for now until we can get rid of this.
+          middleware.use Intermodal::Rack::DummyStore
+
           middleware.use Warden::Manager do |manager|
             manager.default_strategies :x_auth_token #, :basic
             manager.failure_app = proc do
