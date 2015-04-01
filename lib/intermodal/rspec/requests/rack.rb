@@ -108,23 +108,23 @@ module Intermodal
 
         def expect_status(response_status)
           it "should respond with status #{response_status} #{Intermodal::RSpec::HTTP::STATUS_CODES[response_status.to_s]}" do
-            status.should eql(response_status)
+            expect(status).to eql(response_status)
           end
         end
 
         def expect_content_type(mime_type, charset = nil)
           if mime_type
             it "should respond with content type of #{mime_type}" do
-              content_type.should match(%r{^#{mime_type}})
+              expect(content_type).to match(%r{^#{mime_type}})
             end
             if charset
               it "should respond encoded in #{charset}" do
-                content_type.should match(%r{charset=#{charset}})
+                expect(content_type).to match(%r{charset=#{charset}})
               end
             end
           else
             it "should not respond with content type" do
-              content_type.should be_nil
+              expect(content_type).to be_nil
             end
           end
 
@@ -132,8 +132,8 @@ module Intermodal
 
         def expect_empty_body
           it "should respond with a Rack-compliant empty body" do
-            response[2].should be_empty
-            response[2].should be_respond_to(:each)
+            expect(response[2]).to be_empty
+            expect(response[2]).to be_respond_to(:each)
           end
         end
       end
