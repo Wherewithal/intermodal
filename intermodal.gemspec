@@ -14,8 +14,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.homepage = %q{http://github.com/intermodal/intermodal}
-  s.summary = %q{Intermodal lets you quickly put together a pure, JSON/XML-only RESTful web service.}
-  s.description = %q{Declarative DSL for top-level, nested, linked CRUD resource endpoints; DSL for Presenters and Acceptors; API Versioning}
+  s.summary = %q{Intermodal lets you quickly put together a pure, JSON-only RESTful web service.}
+  s.description = %q{DSL for top-level, nested, linked CRUD resource endpoints; DSL for Presenters and Acceptors; API Versioning}
   s.rubyforge_project = "intermodal"
 
   s.files = `git ls-files`.split("\n")
