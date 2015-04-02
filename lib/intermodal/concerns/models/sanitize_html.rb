@@ -13,7 +13,7 @@ module Intermodal
           before_save do
             # Only sanitize if there is something to sanitize
             if self.send(field) and self.send("#{field}_changed?")
-              self.send("#{field}=", Rails::Html::WhiteListSanitizer.new.sanitize(self.send(field), options))
+              self.send("#{field}=", ::Rails::Html::WhiteListSanitizer.new.sanitize(self.send(field), options))
             end
           end
         end
@@ -24,7 +24,7 @@ module Intermodal
           before_save do
             # Only strip if there is something to sanitize
             if self.send(field) and self.send("#{field}_changed?")
-              self.send("#{field}=", Rails::Html::FullSanitizer.new.sanitize(self.send(field)))
+              self.send("#{field}=", ::Rails::Html::FullSanitizer.new.sanitize(self.send(field)))
             end
           end
         end

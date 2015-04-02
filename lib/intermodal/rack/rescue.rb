@@ -14,7 +14,7 @@ module Intermodal
       end
 
       rescue_from Exception do |exception|
-        if defined? Rails and Rails.env == 'production'
+        if defined? ::Rails and ::Rails.env == 'production'
           [500, {}, [ "Unexpected error. Please contact support." ] ]
         else
           [500, {}, [ "Exception: #{exception.message}", "\n\n", exception.backtrace ].tap(&method(:watch)) ]
@@ -30,7 +30,7 @@ module Intermodal
       end
 
       rescue_from ActionController::RoutingError do |exception|
-        if defined? Rails and Rails.env == 'production'
+        if defined? ::Rails and ::Rails.env == 'production'
           [404, {}, ['Not Found'] ]
         else
           [500, {}, [ "Exception: #{exception.message}", "\n", caller.join("\n"), "\n", exception.backtrace ].tap(&method(:watch)) ]

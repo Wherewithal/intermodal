@@ -1,5 +1,5 @@
 # Sets up Intermodal on Rails
-class IntermodalGenerator < Rails::Generators::Base
+class IntermodalGenerator < ::Rails::Generators::Base
   def create_initializer_file
     generate "model", "account name:string --timestamps"
     generate "model", "access_token account_id:integer token:string" # Needs foreign key
