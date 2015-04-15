@@ -26,28 +26,28 @@ module Intermodal
 
             if options[:empty_collection]
               it 'should have an empty collection' do
-                body[collection_element_name.to_s].should be_empty
+                expect(body[collection_element_name.to_s]).to be_empty
               end
             else
               it 'should have a collection' do
                 collection
-                body[collection_element_name.to_s].should_not be_empty
+                expect(body[collection_element_name.to_s]).not_to be_empty
               end
             end
 
             it "should be on page #{options[:page]}" do
               collection
-              responded_collection_metadata['page'].should eql(options[:page])
+              expect(responded_collection_metadata['page']).to eql(options[:page])
             end
 
             it 'should have total_pages' do
               collection
-              responded_collection_metadata['total_pages'].should eql(expected_total_pages)
+              expect(responded_collection_metadata['total_pages']).to eql(expected_total_pages)
             end
 
             it 'should have total_entries' do
               collection
-              responded_collection_metadata['total_entries'].should eql(expected_total_entries)
+              expect(responded_collection_metadata['total_entries']).to eql(expected_total_entries)
             end
           end
         end
