@@ -25,11 +25,11 @@ module Intermodal
         [400, {}, [ 'Bad Request' ] ]
       end
 
-      rescue_from ActiveRecord::RecordNotFound do |exception|
+      rescue_from 'ActiveRecord::RecordNotFound' do |exception|
         [404, {}, [ 'Not Found' ] ]
       end
 
-      rescue_from ActionController::RoutingError do |exception|
+      rescue_from 'ActionController::RoutingError' do |exception|
         if defined? ::Rails and ::Rails.env == 'production'
           [404, {}, ['Not Found'] ]
         else
@@ -37,18 +37,11 @@ module Intermodal
         end
       end
 
-      # TODO: Hack. Untested.
-      if defined? ActiveResource::ResourceNotFound
-        rescue_from ActiveResource::ResourceNotFound do |exception|
-          [404, {}, [ 'Not Found' ] ]
-        end
-      end
-
-      rescue_from ActionDispatch::ParamsParser::ParseError do |exception|
+      rescue_from 'ActionDispatch::ParamsParser::ParseError' do |exception|
         [400, { 'Content-Type' => content_type(:json) }, { :parse_error => exception.message }.to_json]
       end
 
-      rescue_from MultiJson::DecodeError do |exception|
+      rescue_from 'MultiJson::DecodeError' do |exception|
         [400, { 'Content-Type' => content_type(:json) }, { :parse_error => exception.message }.to_json]
       end
 
