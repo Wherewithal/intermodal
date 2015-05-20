@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'will_paginate', '>= 3.0.0'
   s.add_runtime_dependency 'warden'
   s.add_runtime_dependency 'bcrypt'
-  s.add_runtime_dependency 'rlet', '~> 0.6.1'
+  s.add_runtime_dependency 'rlet', '~> 0.7.0'
 
   s.add_development_dependency 'awesome_print'
   s.add_development_dependency 'pry'
