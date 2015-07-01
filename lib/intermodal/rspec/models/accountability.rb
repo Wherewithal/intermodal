@@ -36,11 +36,11 @@ module Intermodal
           instance_eval(&blk) if blk
 
           context 'when concerned with accountability' do
-            let(:model) { subject.class }
-            it { should belong_to :account }
-            it { should validate_presence_of :account_id }
-            it { model.should respond_to :by_account_id }
-            it { model.should respond_to :by_account }
+            let(:model) { described_class }
+            it { is_expected.to belong_to :account }
+            it { is_expected.to validate_presence_of :account_id }
+            it { expect(model).to respond_to :by_account_id }
+            it { expect(model).to respond_to :by_account }
 
             implements_get_interface
           end
@@ -48,50 +48,51 @@ module Intermodal
 
         def implements_get_interface(&blk)
           describe '.get' do
-            let(:model) { subject.class }
+            let(:model) { described_class }
             let(:different_account) { Account.make! }
 
-            it { model.should respond_to :get }
+            it { expect(model).to respond_to :get }
 
             context ':all' do
               context 'when unscoped to account' do
                 let(:collection) { model.get(:all) }
                 it 'should find all resources' do
-                  collection.should include(resource)
-                  collection.size.should eql(1)
+                  expect(collection).to include(resource)
+                  expect(collection.size).to eql(1)
                 end
               end
 
               context 'when scoped to account' do
                 let(:collection) { model.get(:all, account: account) }
                 it 'should find all resources' do
-                  collection.should include(resource)
-                  collection.size.should eql(1)
+                  expect(collection).to include(resource)
+                  expect(collection.size).to eql(1)
                 end
               end
             end
 
             context 'by id' do
+              subject { described_class.get(resource.id) }
               it 'should find resource by id' do
-                model.get(resource.id).should eql(resource)
+                is_expected.to eql(resource)
               end
 
               it 'should return a writeable resource' do
-                model.get(resource.id).should_not be_readonly
+                is_expected.not_to be_readonly
               end
             end
 
             context 'by account' do
               it 'should find resource scoped to account' do
-                model.get(resource.id, account: account).should eql(resource)
+                expect(model.get(resource.id, account: account)).to eql(resource)
               end
 
               it 'should find resource scoped to account id' do
-                model.get(resource.id, account_id: account.id).should eql(resource)
+                expect(model.get(resource.id, account_id: account.id)).to eql(resource)
               end
 
               it 'should find a writeable resource scoped to account id' do
-                model.get(resource.id, account_id: account.id).should_not be_readonly
+                expect(model.get(resource.id, account_id: account.id)).not_to be_readonly
               end
 
               it 'should not find resource scoped to a different account' do
