@@ -11,7 +11,8 @@ module Intermodal
       included do
         include Intermodal::Let
 
-        let(:account) { env['warden'].user }
+        let(:account)    { env['warden'].user }
+        let(:account_id) { account.id }
       end
 
       protected
