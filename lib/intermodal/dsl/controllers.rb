@@ -85,6 +85,7 @@ module Intermodal
         controller = Class.new(_ancestor)
         _namespace.const_set(controller_name, controller)
 
+        controller.send(:include, Intermodal::Controllers::Anonymous)
         controller.collection_name = collection_name
         controller.model = options[:model] if options[:model]
         controller.parent_resource_name = options[:parent_resource_name] if options[:parent_resource_name]

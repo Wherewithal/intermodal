@@ -5,7 +5,6 @@ module Intermodal
 
       included do
         include Intermodal::Controllers::Accountability
-        include Intermodal::Controllers::Anonymous
         include Intermodal::Controllers::PaginatedCollection
 
         respond_to :json
